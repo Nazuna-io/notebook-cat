@@ -187,6 +187,7 @@ UNGROUPED FILES
 ```
 
 ## Example Output Report
+```
 NOTEBOOK CAT - PROCESSING SUMMARY
 ===============================
 
@@ -280,3 +281,4 @@ Group 3: 8 files, 20162 words (4.0% of capacity)
   6. Video_9Ii6gVLGSqs.txt (1937 words)
   7. Video_ljfUtLK6qog.txt (1181 words)
   8. Video_FzIztse-FqM.txt (965 words)
+```
