@@ -1,0 +1,4 @@
+This is sample text file 1.
+It contains a few sentences for testing the notebook-cat tool.
+The main purpose is to provide test data for word counting.
+This file has just a few lines of plain text.

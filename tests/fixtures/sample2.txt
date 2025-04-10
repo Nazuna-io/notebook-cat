@@ -1,0 +1,6 @@
+Sample text file 2 has different content.
+This one has slightly more complex structure.
+It includes some punctuation, and multiple paragraphs.
+
+This is the second paragraph in this sample file.
+Testing the word counting and file concatenation functionality.

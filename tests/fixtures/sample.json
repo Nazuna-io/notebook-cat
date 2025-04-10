@@ -1,0 +1,22 @@
+{
+  "title": "Sample JSON Document",
+  "metadata": {
+    "author": "Test User",
+    "date": "2025-04-10",
+    "version": "1.0"
+  },
+  "sections": [
+    {
+      "heading": "Introduction",
+      "text": "This is a sample JSON file for testing text extraction. The notebook-cat tool should be able to extract text from various JSON structures."
+    },
+    {
+      "heading": "Main Content",
+      "text": "JSON files can contain text in different formats and nested structures. This test file demonstrates a common pattern with sections of content."
+    },
+    {
+      "heading": "Conclusion",
+      "text": "Testing JSON support ensures the tool can handle modern data formats."
+    }
+  ]
+}

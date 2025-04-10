@@ -1,0 +1,6 @@
+[
+  "This is the first item in a simple JSON array.",
+  "The notebook-cat tool should be able to extract this text.",
+  "This tests the ability to handle arrays of strings.",
+  "Each entry should be treated as a separate paragraph."
+]
