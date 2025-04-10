@@ -1,16 +1,16 @@
 # Notebook Cat
 
-A command-line tool to concatenate text, markdown, and JSON files into larger source files suitable for Google NotebookLM, respecting source count and word limits.
+A command-line tool to optimally concatenate text, markdown, and JSON files into larger source files ("sources") for Google NotebookLM, maximizing source count and word limits.
 
 ## Problem
 
-Google NotebookLM limits the number of sources you can upload:
+Google NotebookLM limits the number of sources (files) you can upload.  As of April 9, 2025 these limits are:
 - Free plan: 50 sources maximum
 - Plus plan: 300 sources maximum
 
-Each source file is limited to 200MB in size or 500,000 words.
+Each source file is limited to 200MB in size or 500,000 words, whichever comes first.
 
-Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.
+Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.  For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files in to the fewest number of files, which would be just 4 files/sources (though five files might be needed due extra word count needed for metadata and breaks between data).  With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million works on the Plus plan.
 
 ## Features
 
@@ -25,6 +25,16 @@ Many users have dozens or hundreds of smaller files they'd like to use as source
 - Respects NotebookLM's source count limits based on your plan
 - Provides detailed reporting on files processed, grouped, and any that couldn't be included
 - Dry-run mode to preview operations without creating files
+
+## Limitations
+- NotebookLM is essentially a Retreival-Augmented Generation (RAG) tool that will decompose sources into embeddings.  This should not affect accuracy, but it may have a slight effect on accuracy
+- It is possible there could be other trade-offs with citations and synthesis, but it should be minor.
+- Please report any issues that you find, as there may be ways to improve the file structure to help NotebookLM
+
+## Requirements
+- Python 3.10 or 3.11 works best.  It's recommended to create a python or conda virtual environment, but not necessary
+- Pytest is the only dependency
+- Should work on just about any system
 
 ## Installation
 
