@@ -185,3 +185,98 @@ UNGROUPED FILES
 --------------
 - huge_file.txt (600,000 words): Exceeds word limit
 ```
+
+## Example Output Report
+NOTEBOOK CAT - PROCESSING SUMMARY
+===============================
+
+Total files processed: 76
+Total words processed: 1019796
+Files successfully grouped: 76
+Files not grouped: 0
+
+Output sources created: 3
+
+GROUP DETAILS
+-------------
+Group 1: 22 files, 499766 words (100.0% of capacity)
+  1. Video_KL_6BZhF0A8.txt (36378 words)
+  2. Video_-57lSwEu9ro.txt (34764 words)
+  3. Video_q0e3VcoT238.txt (31740 words)
+  4. Video_eti_ewdbHKU.txt (30515 words)
+  5. Video_T1GU1E9amfY.txt (28795 words)
+  6. Video_4TB4zdQY8Jg.txt (28202 words)
+  7. Video_V6Yql0jrjow.txt (28023 words)
+  8. Video_OBvusf6vn-0.txt (26892 words)
+  9. Video_yWQxaQ_tJVY.txt (26648 words)
+  10. Video_0452NA7OnzU.txt (26076 words)
+  11. Video_xFRgZOhCVLg.txt (25992 words)
+  12. Video_OPxxJ2wBNTA.txt (25686 words)
+  13. Video__tg1zT_2pyo.txt (22545 words)
+  14. Video_JQzNDnJCtiQ.txt (21732 words)
+  15. Video_lcn7D2DRtPU.txt (21714 words)
+  16. Video_f125iYyWHZk.txt (21345 words)
+  17. Video_PU8QJREj-54.txt (20928 words)
+  18. Video_WUOfoNKLV_M.txt (20921 words)
+  19. Video_0ynMlOnf5kw.txt (20522 words)
+  20. Video_xWFdBFQc39A.txt (243 words)
+  21. Video_jNQXAC9IVRw.txt (72 words)
+  22. Video_dQw4w9WgXcQ.txt (33 words)
+
+Group 2: 46 files, 499868 words (100.0% of capacity)
+  1. Video_IvqSgHvzTnY.txt (20230 words)
+  2. Video_2NWKJL6ihOw.txt (18939 words)
+  3. Video_9HYpN0Bauk4.txt (17356 words)
+  4. Video_iywvNIWKbPI.txt (16673 words)
+  5. Video_6bJEM_J3uaE.txt (16404 words)
+  6. Video_13KcN-fRLFI.txt (14752 words)
+  7. Video_f7W-4HEGtHk.txt (14619 words)
+  8. Video_IXfVyyjbTOs.txt (14326 words)
+  9. Video_4mfMV4gpGDI.txt (14130 words)
+  10. Video_gRQwbRtsebw.txt (14085 words)
+  11. Video__D7fxkvsUUw.txt (14061 words)
+  12. Video_SVIgQ9gglSI.txt (13157 words)
+  13. Video__NLfn_p08KU.txt (13044 words)
+  14. Video_CEWpapzhO1M.txt (12938 words)
+  15. Video_gsu1thdI2Qo.txt (12938 words)
+  16. Video_qfQpJxRP8ew.txt (12889 words)
+  17. Video_fO-0uPN_f3w.txt (12852 words)
+  18. Video_vo5dL-8-RPo.txt (12580 words)
+  19. Video_UDSvo2nk_Hg.txt (12242 words)
+  20. Video_gyFHlxdOSsw.txt (12036 words)
+  21. Video_oPpDGrmX9No.txt (11963 words)
+  22. Video_qdE8yaxK6BU.txt (11732 words)
+  23. Video_TvXzhfySwWs.txt (11637 words)
+  24. Video_SXaLoySpxUo.txt (11546 words)
+  25. Video_3NXcqD8GyjY.txt (11516 words)
+  26. Video_E5dE8U1eP3A.txt (10265 words)
+  27. Video_Mo2-7RMOh5o.txt (10187 words)
+  28. Video_pWFZafYLSeI.txt (8972 words)
+  29. Video_wLYvfutQTQw.txt (8750 words)
+  30. Video_8CtgO3EZOwk.txt (8399 words)
+  31. Video_Mrx7JWEuRkc.txt (8028 words)
+  32. Video_1tMKz-vmTEA.txt (7950 words)
+  33. Video_VHzDsoliZiY.txt (7894 words)
+  34. Video_j4LDqk3tKT0.txt (7554 words)
+  35. Video_DlGJfhuno6g.txt (7547 words)
+  36. Video_54c8svkLHf4.txt (7312 words)
+  37. Video_Urmvgntxuss.txt (6942 words)
+  38. Video_u_8vu-BY1mc.txt (6881 words)
+  39. Video_ki6_ckQllyI.txt (6870 words)
+  40. Video_A2BhItk6Fo0.txt (6629 words)
+  41. Video_CwHdzz3RZLc.txt (6620 words)
+  42. Video_c3vE5jpfBI0.txt (6251 words)
+  43. Video__rHHNTrOgNk.txt (5637 words)
+  44. Video_E1eoLw1goic.txt (4904 words)
+  45. Video_Ax87nMWhmz0.txt (3977 words)
+  46. Video_Rel3R79Y_oQ.txt (3654 words)
+
+Group 3: 8 files, 20162 words (4.0% of capacity)
+  1. Video_2-g1xYsgJ9s.txt (3893 words)
+  2. Video_wCiOUNCpQzQ.txt (3455 words)
+  3. Video_0psoYz3YrjU.txt (3110 words)
+  4. Video_ikh8EIN3Qaw.txt (3030 words)
+  5. Video_iUjCy3UbkHM.txt (2591 words)
+  6. Video_9Ii6gVLGSqs.txt (1937 words)
+  7. Video_ljfUtLK6qog.txt (1181 words)
+  8. Video_FzIztse-FqM.txt (965 words)
