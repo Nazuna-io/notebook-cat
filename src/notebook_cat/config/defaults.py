@@ -1,7 +1,7 @@
 # Default configuration values for NotebookLM
 
 # NotebookLM limits
-WORD_LIMIT = 500000  # Maximum word count per source file
+WORD_LIMIT = 480000  # Maximum word count per source file (with 20k word cushion)
 DEFAULT_SOURCE_LIMIT = 50  # Default source count limit (Free plan)
 PLUS_SOURCE_LIMIT = 300  # Source count limit for Plus plan
 

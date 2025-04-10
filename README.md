@@ -8,7 +8,7 @@ Google NotebookLM limits the number of sources (files) you can upload.  As of Ap
 - Free plan: 50 sources maximum
 - Plus plan: 300 sources maximum
 
-Each source file is limited to 200MB in size or 500,000 words, whichever comes first.
+Each source file is limited to 200MB in size or 500,000 words, whichever comes first. However, to ensure successful processing by NotebookLM, this tool uses a limit of 480,000 words (providing a 20,000 word buffer).
 
 Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.  For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files in to the fewest number of files, which would be just 4 files/sources (though five files might be needed due extra word count needed for metadata and breaks between data).  With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million works on the Plus plan.
 
@@ -137,7 +137,7 @@ Processing Options:
 ## Configuration
 
 The tool uses these default limits which can be adjusted in the configuration file:
-- Word limit per source file: 500,000 words
+- Word limit per source file: 480,000 words (provides a buffer below NotebookLM's 500,000 word limit)
 - Default source limit: 50 sources (Free plan)
 - Plus plan limit: 300 sources
 
@@ -200,7 +200,7 @@ Output sources created: 3
 
 GROUP DETAILS
 -------------
-Group 1: 22 files, 499766 words (100.0% of capacity)
+Group 1: 22 files, 479766 words (100.0% of capacity)
   1. Video_KL_6BZhF0A8.txt (36378 words)
   2. Video_-57lSwEu9ro.txt (34764 words)
   3. Video_q0e3VcoT238.txt (31740 words)
@@ -224,7 +224,7 @@ Group 1: 22 files, 499766 words (100.0% of capacity)
   21. Video_jNQXAC9IVRw.txt (72 words)
   22. Video_dQw4w9WgXcQ.txt (33 words)
 
-Group 2: 46 files, 499868 words (100.0% of capacity)
+Group 2: 46 files, 479868 words (100.0% of capacity)
   1. Video_IvqSgHvzTnY.txt (20230 words)
   2. Video_2NWKJL6ihOw.txt (18939 words)
   3. Video_9HYpN0Bauk4.txt (17356 words)
