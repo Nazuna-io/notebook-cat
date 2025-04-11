@@ -1,4 +1,4 @@
-![Notebook Cat](assets/notebook-cat-small.jpeg)
+![Notebook Cat](assets/notebook-cat-small.jpg)
 
 # Notebook Cat
 
