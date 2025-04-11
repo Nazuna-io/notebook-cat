@@ -136,10 +136,22 @@ Processing Options:
 
 ## Configuration
 
-The tool uses these default limits which can be adjusted in the configuration file:
-- Word limit per source file: 480,000 words (provides a buffer below NotebookLM's 500,000 word limit)
+The tool uses these default limits which can be adjusted in the `config.py` file at the root of the project:
+- Word limit per source file: 248,000 words (provides a buffer below NotebookLM's 500,000 word limit)
 - Default source limit: 50 sources (Free plan)
 - Plus plan limit: 300 sources
+
+Example configuration (`config.py`):
+```python
+# Maximum number of words per source file
+WORD_LIMIT = 248000  # Includes a 20k word cushion
+
+# Source count limits for different plans
+DEFAULT_SOURCE_LIMIT = 50  # Free plan
+PLUS_SOURCE_LIMIT = 300    # Plus plan
+```
+
+You can modify these values directly in this file to customize the behavior of the tool to your specific needs.
 
 ## Example Output
 
