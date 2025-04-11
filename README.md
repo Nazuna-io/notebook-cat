@@ -10,7 +10,7 @@ Google NotebookLM limits the number of sources (files) you can upload.  As of Ap
 - Free plan: 50 sources maximum
 - Plus plan: 300 sources maximum
 
-Each source file is limited to 200MB in size or 500,000 words, whichever comes first. Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.  For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files in to the fewest number of files, which would be just 4 files/sources (though five files might be needed due extra word count needed for metadata and breaks between data).  With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million works on the Plus plan.
+Each source file is limited to 200MB in size or 500,000 words, whichever comes first. Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.  For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files in to the fewest number of files, which would be just 4 files/sources (though five files might be needed due extra word count needed for metadata and breaks between data).  With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million words on the Plus plan.
 
 ## Features
 
