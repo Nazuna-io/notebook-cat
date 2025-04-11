@@ -28,7 +28,7 @@ Each source file is limited to 200MB in size or 500,000 words, whichever comes f
 
 ## Limitations
 - Currently, only txt, markdown (.md), and json files are supported
-- NotebookLM is essentially a Retreival-Augmented Generation (RAG) tool that will decompose sources into embeddings.  This should not affect accuracy, but it may have a slight effect on accuracy
+- NotebookLM is essentially a Retreival-Augmented Generation (RAG) tool that will decompose sources into embeddings.  Concatenating or grouping files should not affect accuracy, but it may have a slight effect on accuracy
 - It is possible there could be other trade-offs with citations and synthesis, but it should be minor.
 - Please report any issues that you find, as there may be ways to improve the file structure to help NotebookLM
 
