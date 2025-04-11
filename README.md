@@ -27,6 +27,7 @@ Many users have dozens or hundreds of smaller files they'd like to use as source
 - Dry-run mode to preview operations without creating files
 
 ## Limitations
+- Currently, only txt, markdown (.md), and json files are supported
 - NotebookLM is essentially a Retreival-Augmented Generation (RAG) tool that will decompose sources into embeddings.  This should not affect accuracy, but it may have a slight effect on accuracy
 - It is possible there could be other trade-offs with citations and synthesis, but it should be minor.
 - Please report any issues that you find, as there may be ways to improve the file structure to help NotebookLM
@@ -130,14 +131,14 @@ Processing Options:
 
 ## Limitations
 
-- Does not split files that exceed the word limit - they'll be skipped
+- Does not split files that exceed the word limit - they'll be skipped.  The notebook-cat can only group files under the word limit
 - Files are concatenated with simple text separators
 - JSON extraction works best with simple structures; complex nested objects may need a specific path
 
 ## Configuration
 
 The tool uses these default limits which can be adjusted in the `config.py` file at the root of the project:
-- Word limit per source file: 248,000 words (provides a buffer below NotebookLM's 500,000 word limit)
+- Word limit per source file: 380,000 words (You can configure this to the full 500k, but there is a bug in Google's NotebookLM source upload that prevents it from successfully adding files with more than about 380k words, as of April 10, 2025)
 - Default source limit: 50 sources (Free plan)
 - Plus plan limit: 300 sources
 
@@ -197,6 +198,13 @@ UNGROUPED FILES
 --------------
 - huge_file.txt (600,000 words): Exceeds word limit
 ```
+
+## TODOs and Future Improvements
+
+Future features and improvements planned for notebook-cat:
+
+1. **Interactive Mode**: Add an interactive CLI mode for easier use without having to remember all command line options
+2. **PDF Support**: Add support for extracting text from PDF files
 
 ## Example Output Report
 ```
