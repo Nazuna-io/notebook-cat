@@ -199,6 +199,10 @@ UNGROUPED FILES
 - huge_file.txt (600,000 words): Exceeds word limit
 ```
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## TODOs and Future Improvements
 
 Future features and improvements planned for notebook-cat:
