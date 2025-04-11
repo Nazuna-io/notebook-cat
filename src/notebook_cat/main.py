@@ -128,10 +128,22 @@ def main():
             max_files=args.max_files
         )
         print("\nSuccessfully finished.")
+    except FileNotFoundError as e:
+        print(f"\nError: File or directory not found: {e}")
+        sys.exit(1)
+    except PermissionError as e:
+        print(f"\nError: Permission denied: {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"\nAn error occurred: {e}")
-        import traceback
-        traceback.print_exc()
+        # Provide a generic error message without detailed traceback
+        print(f"\nAn error occurred during processing: {type(e).__name__}")
+        print("Check input arguments and file permissions.")
+        
+        # Enable this for debugging but disable for production
+        if 'NOTEBOOK_CAT_DEBUG' in os.environ:
+            import traceback
+            traceback.print_exc()
+        
         sys.exit(1)
 
 if __name__ == '__main__':

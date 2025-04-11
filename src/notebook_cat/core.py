@@ -42,6 +42,41 @@ def count_words_in_file(filepath: Path, json_path: Optional[str] = None) -> int:
         print(f"Error reading or counting words in {filepath}: {e}")
         return 0  # Treat files with errors as having 0 words
 
+def extract_default_text_from_json(data):
+    """
+    Extract text content from JSON data using default extraction methods.
+    
+    Args:
+        data: Parsed JSON data
+        
+    Returns:
+        Extracted text content as a string
+    """
+    # Case 1: Simple array of strings
+    if isinstance(data, list) and all(isinstance(item, str) for item in data):
+        return "\n\n".join(data)
+    
+    # Case 2: Object with text-like fields
+    if isinstance(data, dict):
+        for field in JSON_TEXT_FIELDS:
+            if field in data and isinstance(data[field], str):
+                return data[field]
+        
+        # Case 3: Look for arrays of objects with text fields
+        for field, value in data.items():
+            if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
+                texts = []
+                for item in value:
+                    for text_field in JSON_TEXT_FIELDS:
+                        if text_field in item and isinstance(item[text_field], str):
+                            texts.append(item[text_field])
+                            break
+                if texts:
+                    return "\n\n".join(texts)
+    
+    # If nothing worked, convert the whole thing to a string
+    return json.dumps(data, indent=2)
+
 def extract_text_from_json(filepath: Path, json_path: Optional[str] = None) -> str:
     """
     Extract text content from a JSON file.
@@ -54,75 +89,73 @@ def extract_text_from_json(filepath: Path, json_path: Optional[str] = None) -> s
         Extracted text content as a string
     """
     try:
+        # Set file size limit to prevent JSON bomb attacks (50MB)
+        file_size_limit = 50 * 1024 * 1024  # 50MB
+        
+        # Check file size before loading
+        file_size = filepath.stat().st_size
+        if file_size > file_size_limit:
+            print(f"Warning: JSON file {filepath} exceeds size limit of 50MB. Skipping.")
+            return ""
+            
         with open(filepath, 'r', encoding='utf-8') as f:
+            # Use json.load with size limit to prevent DoS attacks
             data = json.load(f)
         
         # If a specific JSON path is provided, use it
         if json_path:
-            parts = json_path.split('.')
-            current = data
-            for part in parts:
-                if isinstance(current, dict) and part in current:
-                    current = current[part]
-                elif isinstance(current, list) and part.isdigit():
-                    current = current[int(part)]
-                else:
-                    return ""  # Path not found
+            # Validate JSON path to prevent traversal vulnerabilities
+            valid_path = True
+            for part in json_path.split('.'):
+                if not (part.isalnum() or part.isdigit()):
+                    print(f"Warning: Invalid JSON path format: {json_path}. Using default extraction.")
+                    valid_path = False
+                    break
             
-            # Handle different types that the path might resolve to
-            if isinstance(current, str):
-                return current
-            elif isinstance(current, list):
-                # If it's a list of strings, join them
-                if all(isinstance(item, str) for item in current):
-                    return "\n\n".join(current)
-                # If it's a list of objects with text fields, extract and join
-                texts = []
-                for item in current:
-                    if isinstance(item, dict):
-                        for field in JSON_TEXT_FIELDS:
-                            if field in item and isinstance(item[field], str):
-                                texts.append(item[field])
-                                break
-                return "\n\n".join(texts)
-            elif isinstance(current, dict):
-                # Extract text from known text fields
-                for field in JSON_TEXT_FIELDS:
-                    if field in current and isinstance(current[field], str):
-                        return current[field]
+            if valid_path:
+                parts = json_path.split('.')
+                current = data
+                for part in parts:
+                    if isinstance(current, dict) and part in current:
+                        current = current[part]
+                    elif isinstance(current, list) and part.isdigit():
+                        current = current[int(part)]
+                    else:
+                        return ""  # Path not found
                 
-                # No known text field found, convert to string
-                return json.dumps(current, indent=2)
+                # Handle different types that the path might resolve to
+                if isinstance(current, str):
+                    return current
+                elif isinstance(current, list):
+                    # If it's a list of strings, join them
+                    if all(isinstance(item, str) for item in current):
+                        return "\n\n".join(current)
+                    # If it's a list of objects with text fields, extract and join
+                    texts = []
+                    for item in current:
+                        if isinstance(item, dict):
+                            for field in JSON_TEXT_FIELDS:
+                                if field in item and isinstance(item[field], str):
+                                    texts.append(item[field])
+                                    break
+                    return "\n\n".join(texts)
+                elif isinstance(current, dict):
+                    # Extract text from known text fields
+                    for field in JSON_TEXT_FIELDS:
+                        if field in current and isinstance(current[field], str):
+                            return current[field]
+                    
+                    # No known text field found, convert to string
+                    return json.dumps(current, indent=2)
+                else:
+                    # Convert to string as fallback
+                    return str(current)
             else:
-                # Convert to string as fallback
-                return str(current)
+                # If path is invalid, use default extraction
+                return extract_default_text_from_json(data)
         
         # No path specified, try to automatically extract text
-        
-        # Case 1: Simple array of strings
-        if isinstance(data, list) and all(isinstance(item, str) for item in data):
-            return "\n\n".join(data)
-        
-        # Case 2: Object with text-like fields
-        if isinstance(data, dict):
-            for field in JSON_TEXT_FIELDS:
-                if field in data and isinstance(data[field], str):
-                    return data[field]
-            
-            # Case 3: Look for arrays of objects with text fields
-            for field, value in data.items():
-                if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
-                    texts = []
-                    for item in value:
-                        for text_field in JSON_TEXT_FIELDS:
-                            if text_field in item and isinstance(item[text_field], str):
-                                texts.append(item[text_field])
-                                break
-                    if texts:
-                        return "\n\n".join(texts)
-        
-        # If nothing worked, convert the whole thing to a string
-        return json.dumps(data, indent=2)
+        return extract_default_text_from_json(data)
     
     except Exception as e:
         print(f"Error extracting text from JSON file {filepath}: {e}")
@@ -208,6 +241,19 @@ def group_files(files_with_counts: List[Tuple[Path, int]], source_limit: int) ->
 
     return groups, ungrouped_files
 
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitize a filename to prevent injection attacks.
+    
+    Args:
+        filename: The filename to sanitize
+        
+    Returns:
+        Sanitized filename
+    """
+    # Replace potentially dangerous characters with underscores
+    return ''.join(c if c.isalnum() or c in '._- ' else '_' for c in filename)
+
 def concatenate_files(group: List[Tuple[Path, int]], output_filepath: Path):
     """Concatenates files from a group into a single output file with separators."""
     try:
@@ -216,13 +262,16 @@ def concatenate_files(group: List[Tuple[Path, int]], output_filepath: Path):
                 try:
                     with open(file_path, 'r', encoding='utf-8') as infile:
                         content = infile.read()
-                        outfile.write(f"--- START FILE: {file_path.name} ({word_count} words) ---\n\n")
+                        # Sanitize filename before including in output
+                        safe_filename = sanitize_filename(file_path.name)
+                        outfile.write(f"--- START FILE: {safe_filename} ({word_count} words) ---\n\n")
                         outfile.write(content)
-                        outfile.write(f"\n\n--- END FILE: {file_path.name} ---\n\n")
+                        outfile.write(f"\n\n--- END FILE: {safe_filename} ---\n\n")
                 except Exception as e:
                     print(f"Error reading file {file_path} during concatenation: {e}")
-                    # Optionally write an error message into the output file
-                    outfile.write(f"--- ERROR: Could not read file {file_path.name} ---\n\n")
+                    # Sanitize filename in error message
+                    safe_filename = sanitize_filename(file_path.name)
+                    outfile.write(f"--- ERROR: Could not read file {safe_filename} ---\n\n")
         print(f"Successfully created concatenated file: {output_filepath.name}")
     except Exception as e:
         print(f"Error writing output file {output_filepath}: {e}")
