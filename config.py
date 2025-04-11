@@ -5,7 +5,7 @@ Adjust these settings to customize the behavior of the application.
 
 # NotebookLM word limit settings
 # Maximum number of words per source file
-WORD_LIMIT = 248000  # Includes a 20k word cushion
+WORD_LIMIT = 380000  # Includes a 20k word cushion
 
 # Source count limits for different plans
 DEFAULT_SOURCE_LIMIT = 50  # Free plan

@@ -6,11 +6,13 @@ A command-line tool to optimally concatenate text, markdown, and JSON files into
 
 ## Problem
 
-Google NotebookLM limits the number of sources (files) you can upload.  As of April 9, 2025 these limits are:
+Google NotebookLM limits the number of sources (files) you can upload. As of April 9, 2025 these limits are:
 - Free plan: 50 sources maximum
 - Plus plan: 300 sources maximum
 
-Each source file is limited to 200MB in size or 500,000 words, whichever comes first. Many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.  For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files in to the fewest number of files, which would be just 4 files/sources (though five files might be needed due extra word count needed for metadata and breaks between data).  With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million words on the Plus plan.
+Each source file is limited to 200MB in size or 500,000 words, whichever comes first. However, many users have dozens or hundreds of smaller files they'd like to use as sources, but they hit the source count limit long before the word limit. This tool solves that problem by intelligently combining files.
+
+For example, if a user is on the free plan with a 50 source limit but has 200 small files of 10,000 words each, this tool will combine those files into the fewest number of files, which would be just 4-5 files/sources (additional files might be needed due to extra word count for metadata and breaks between data). With notebook-cat you can overcome the sources limits to load 25 million words on the free plan or 150 million words on the Plus plan.
 
 ## Features
 
@@ -27,13 +29,17 @@ Each source file is limited to 200MB in size or 500,000 words, whichever comes f
 - Dry-run mode to preview operations without creating files
 
 ## Limitations
+
 - Currently, only txt, markdown (.md), and json files are supported
-- Due to an bug in Google NotebookLM's upload, sources with more than about 399k words will cause and error and not upload successfully, even thought the limit is supposedly 500k word per source.
-- NotebookLM is essentially a Retreival-Augmented Generation (RAG) tool that will decompose sources into embeddings.  Concatenating or grouping files should not affect accuracy, but it may have a slight effect on accuracy
-- It is possible there could be other trade-offs with citations and synthesis, but it should be minor.
+- Due to a bug in Google NotebookLM's upload, sources with more than about 380,000 words will cause an error and not upload successfully, even though the limit is supposedly 500,000 words per source
+- Does not split files that exceed the word limit - they'll be skipped. The notebook-cat can only group files under the word limit
+- Files are concatenated with simple text separators
+- JSON extraction works best with simple structures; complex nested objects may need a specific path
+- NotebookLM is essentially a Retrieval-Augmented Generation (RAG) tool that will decompose sources into embeddings. Concatenating or grouping files should not affect accuracy significantly
+- There could be minor trade-offs with citations and synthesis
 
 ## Requirements
-- Python 3.10 or 3.11 works best.  It's recommended to create a python or conda virtual environment, but not necessary
+- Python 3.10 or 3.11 works best. It's recommended to create a Python or conda virtual environment, but not necessary
 - Pytest is the only dependency
 - Should work on just about any system
 
@@ -41,7 +47,7 @@ Each source file is limited to 200MB in size or 500,000 words, whichever comes f
 
 From source:
 ```bash
-git clone https://github.com/yourusername/notebook-cat.git
+git clone https://github.com/Nazuna-io/notebook-cat.git
 cd notebook-cat
 pip install -e .
 ```
@@ -129,12 +135,6 @@ Processing Options:
   --resume              Resume a previously interrupted operation
 ```
 
-## Limitations
-
-- Does not split files that exceed the word limit - they'll be skipped.  The notebook-cat can only group files under the word limit
-- Files are concatenated with simple text separators
-- JSON extraction works best with simple structures; complex nested objects may need a specific path
-
 ## Configuration
 
 The tool uses these default limits which can be adjusted in the `config.py` file at the root of the project:
@@ -145,7 +145,7 @@ The tool uses these default limits which can be adjusted in the `config.py` file
 Example configuration (`config.py`):
 ```python
 # Maximum number of words per source file
-WORD_LIMIT = 248000  # Includes a 20k word cushion
+WORD_LIMIT = 380000  # Set below the official 500k limit due to NotebookLM upload bug
 
 # Source count limits for different plans
 DEFAULT_SOURCE_LIMIT = 50  # Free plan
