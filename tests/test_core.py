@@ -52,31 +52,6 @@ def test_count_words_nonexistent_file(temp_dir):
     # A better approach might be to raise an exception, which we could test with pytest.raises
     assert core.count_words_in_file(filepath) == 0 
 
-# === Tests for get_text_files ===
-
-def test_get_text_files_only_txt(temp_dir):
-    """Test finding only .txt files."""
-    (temp_dir / "file1.txt").touch()
-    (temp_dir / "file2.txt").touch()
-    (temp_dir / "image.jpg").touch()
-    expected_files = {temp_dir / "file1.txt", temp_dir / "file2.txt"}
-    found_files = set(core.get_text_files(temp_dir))
-    assert found_files == expected_files
-
-def test_get_text_files_empty_dir(temp_dir):
-    """Test finding files in an empty directory."""
-    assert core.get_text_files(temp_dir) == []
-
-def test_get_text_files_no_txt(temp_dir):
-    """Test finding files when no .txt files exist."""
-    (temp_dir / "document.pdf").touch()
-    (temp_dir / "archive.zip").touch()
-    assert core.get_text_files(temp_dir) == []
-
-def test_get_text_files_invalid_dir():
-    """Test providing a non-existent directory."""
-    with pytest.raises(ValueError):
-        core.get_text_files(Path("/non/existent/path/hopefully"))
 
 # === Tests for group_files ===
 
@@ -295,4 +270,4 @@ def test_concatenate_files_read_error(temp_dir, capsys):
     captured = capsys.readouterr()
     assert f"Error reading file {file2_path}" in captured.out
 
-# TODO: Add more tests for get_text_files, group_files, concatenate_files
+# TODO: Add more tests for group_files, concatenate_files

@@ -26,7 +26,7 @@ assert ROOT_DEFAULT_SOURCE_LIMIT == DEFAULT_SOURCE_LIMIT, f"Default source limit
 assert ROOT_PLUS_SOURCE_LIMIT == PLUS_SOURCE_LIMIT, f"Plus source limit mismatch"
 
 # Verify that the correct values are being used
-assert WORD_LIMIT == 248000, f"Incorrect word limit: {WORD_LIMIT}"
+assert WORD_LIMIT == 380000, f"Incorrect word limit: {WORD_LIMIT}"
 assert DEFAULT_SOURCE_LIMIT == 50, f"Incorrect default source limit: {DEFAULT_SOURCE_LIMIT}"
 assert PLUS_SOURCE_LIMIT == 300, f"Incorrect plus source limit: {PLUS_SOURCE_LIMIT}"
 

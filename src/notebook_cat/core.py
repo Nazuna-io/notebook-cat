@@ -194,11 +194,6 @@ def get_files_by_extensions(directory: Path, extensions: Set[str], limit: Option
     
     return all_files
 
-def get_text_files(directory: Path) -> List[Path]:
-    """Gets a list of .txt files in the specified directory."""
-    if not directory.is_dir():
-        raise ValueError(f"Input path {directory} is not a valid directory.")
-    return list(directory.glob('*.txt'))
 
 def group_files(files_with_counts: List[Tuple[Path, int]], source_limit: int) -> Tuple[List[List[Tuple[Path, int]]], List[Tuple[Path, int]]]:
     """Groups files into lists, respecting the word limit per group and the total source limit."""
