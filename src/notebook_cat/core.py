@@ -2,7 +2,6 @@
 import os
 import math
 import json
-import pickle
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional, Set
 
@@ -241,10 +240,10 @@ def save_resume_state(output_path: Path, groups_processed: int, files_processed:
     try:
         state = {
             'groups_processed': groups_processed,
-            'files_processed': files_processed
+            'files_processed': list(files_processed)  # Convert set to list for JSON serialization
         }
-        with open(resume_file, 'wb') as f:
-            pickle.dump(state, f)
+        with open(resume_file, 'w', encoding='utf-8') as f:
+            json.dump(state, f)
     except Exception as e:
         print(f"Warning: Could not save resume state: {e}")
 
@@ -264,9 +263,12 @@ def load_resume_state(output_path: Path) -> Tuple[int, Set[str]]:
         return 0, set()
     
     try:
-        with open(resume_file, 'rb') as f:
-            state = pickle.load(f)
-            return state.get('groups_processed', 0), state.get('files_processed', set())
+        with open(resume_file, 'r', encoding='utf-8') as f:
+            state = json.load(f)
+            groups_processed = state.get('groups_processed', 0)
+            # Convert list back to set
+            files_processed = set(state.get('files_processed', []))
+            return groups_processed, files_processed
     except Exception as e:
         print(f"Warning: Could not load resume state: {e}")
         return 0, set()
