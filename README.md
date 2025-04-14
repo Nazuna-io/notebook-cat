@@ -38,6 +38,10 @@ For example, if a user is on the free plan with a 50 source limit but has 200 sm
 - NotebookLM is essentially a Retrieval-Augmented Generation (RAG) tool that will decompose sources into embeddings. Concatenating or grouping files should not affect accuracy significantly
 - There could be minor trade-offs with citations and synthesis
 
+## Known Issues
+
+- **NotebookLM Upload Inconsistency**: When uploading multiple large files to NotebookLM at once, some files may fail to process. This appears to be a limitation on Google's side (possibly related to timeouts or resource constraints). If this happens, you can successfully upload the problematic files individually. Reducing the word limit per file (e.g., from 380K to 350K words) may change which files fail, but doesn't necessarily fix the issue.
+
 ## Requirements
 - Python 3.10 or 3.11 works best. It's recommended to create a Python or conda virtual environment, but not necessary
 - Pytest is the only dependency
