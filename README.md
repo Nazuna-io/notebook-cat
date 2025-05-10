@@ -44,7 +44,9 @@ For example, if a user is on the free plan with a 50 source limit but has 200 sm
 
 ## Requirements
 - Python 3.10 or 3.11 works best. It's recommended to create a Python or conda virtual environment, but not necessary
-- Pytest is the only dependency
+- Dependencies:
+  - Pytest for testing
+  - Gradio for the web interface (only needed if using the web UI)
 - Should work on just about any system
 
 ## Installation
@@ -57,6 +59,8 @@ pip install -e .
 ```
 
 ## Basic Usage
+
+### Command Line Interface
 
 ```bash
 # Basic usage with default parameters (50 source limit, all supported file types)
@@ -71,6 +75,32 @@ notebook-cat /path/to/input/files /path/to/output/directory -l 75
 # Preview what would be done without creating files
 notebook-cat /path/to/input/files /path/to/output/directory --dry-run
 ```
+
+### Web Interface
+
+The tool also provides a simple web interface for easier use:
+
+```bash
+# Launch the web interface (if installed via pip)
+notebook-cat-web
+
+# Alternative method if running from source
+cd notebook-cat
+python3 -m notebook_cat.webui
+```
+
+The web interface will be accessible from:
+- Local access: http://localhost:7860
+- Network access: http://[YOUR-IP-ADDRESS]:7860 (accessible from any device on your network)
+
+The web interface allows you to:
+1. Upload files via drag-and-drop or file selection
+2. Choose between Free and Plus plan limits (or set a custom limit)
+3. Adjust word limits per source
+4. Process files and download the results as a ZIP file
+
+This is ideal for users who prefer a graphical interface over command-line tools.
+
 
 ## Advanced Usage
 
@@ -211,8 +241,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Future features and improvements planned for notebook-cat:
 
-1. **Interactive Mode**: Add an interactive CLI mode for easier use without having to remember all command line options
-2. **PDF Support**: Add support for extracting text from PDF files
+1. ~~**Interactive Mode**: Add an interactive CLI mode for easier use without having to remember all command line options~~ (Implemented via Web UI)
+2. **Enhanced Web UI**: Add more features to the web interface, such as custom file grouping and preview
+3. **PDF Support**: Add support for extracting text from PDF files
 
 ## Example Output Report
 ```

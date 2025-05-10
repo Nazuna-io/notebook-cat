@@ -14,10 +14,11 @@ setup(
     entry_points={
         'console_scripts': [
             'notebook-cat=notebook_cat.main:main',
+            'notebook-cat-web=notebook_cat.webui:launch_ui',
         ],
     },
     install_requires=[
-        # No external dependencies required beyond standard library
+        'gradio>=4.0.0',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
