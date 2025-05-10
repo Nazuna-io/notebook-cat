@@ -29,7 +29,7 @@ def temp_dirs():
         yield Path(input_dir), Path(output_dir)
 
 @patch('sys.argv')
-def test_main_basic_usage(mock_argv, temp_dirs):
+def test_main_basic_usage(mock_argv, temp_dirs, monkeypatch):
     """Test basic usage of the main function."""
     input_dir, output_dir = temp_dirs
     
@@ -40,25 +40,30 @@ def test_main_basic_usage(mock_argv, temp_dirs):
         str(output_dir)
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with correct arguments
-        mock_process.assert_called_once()
-        call_args = mock_process.call_args[1]
-        assert call_args['input_dir'] == str(input_dir)
-        assert call_args['output_dir'] == str(output_dir)
-        assert call_args['source_limit'] == DEFAULT_SOURCE_LIMIT
-        assert call_args['dry_run'] is False
-        assert call_args['resume'] is False
-        assert 'txt' in call_args['file_extensions']
-        assert 'md' in call_args['file_extensions']
-        assert 'json' in call_args['file_extensions']
-        assert call_args['max_files'] is None
+    main.main()
+    
+    # Check that process_directory was called with correct arguments
+    mock_process.assert_called_once()
+    call_args = mock_process.call_args[1]
+    assert call_args['input_dir'] == str(Path(input_dir).absolute())
+    assert call_args['output_dir'] == str(Path(output_dir).absolute())
+    assert call_args['source_limit'] == DEFAULT_SOURCE_LIMIT
+    assert call_args['dry_run'] is False
+    assert call_args['resume'] is False
+    assert 'txt' in call_args['file_extensions']
+    assert 'md' in call_args['file_extensions']
+    assert 'json' in call_args['file_extensions']
+    assert call_args['max_files'] is None
 
 @patch('sys.argv')
-def test_main_plus_plan(mock_argv, temp_dirs):
+def test_main_plus_plan(mock_argv, temp_dirs, monkeypatch):
     """Test using the plus plan option."""
     input_dir, output_dir = temp_dirs
     
@@ -70,16 +75,21 @@ def test_main_plus_plan(mock_argv, temp_dirs):
         "--plus-plan"
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with plus plan limit
-        call_args = mock_process.call_args[1]
-        assert call_args['source_limit'] == PLUS_SOURCE_LIMIT
+    main.main()
+    
+    # Check that process_directory was called with plus plan limit
+    call_args = mock_process.call_args[1]
+    assert call_args['source_limit'] == PLUS_SOURCE_LIMIT
 
 @patch('sys.argv')
-def test_main_custom_limit(mock_argv, temp_dirs):
+def test_main_custom_limit(mock_argv, temp_dirs, monkeypatch):
     """Test using a custom source limit."""
     input_dir, output_dir = temp_dirs
     
@@ -91,16 +101,21 @@ def test_main_custom_limit(mock_argv, temp_dirs):
         "--limit", "75"
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with custom limit
-        call_args = mock_process.call_args[1]
-        assert call_args['source_limit'] == 75
+    main.main()
+    
+    # Check that process_directory was called with custom limit
+    call_args = mock_process.call_args[1]
+    assert call_args['source_limit'] == 75
 
 @patch('sys.argv')
-def test_main_specific_extensions(mock_argv, temp_dirs):
+def test_main_specific_extensions(mock_argv, temp_dirs, monkeypatch):
     """Test using specific file extensions."""
     input_dir, output_dir = temp_dirs
     
@@ -112,18 +127,23 @@ def test_main_specific_extensions(mock_argv, temp_dirs):
         "--extensions", "txt,md"
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with correct extensions
-        call_args = mock_process.call_args[1]
-        assert 'txt' in call_args['file_extensions']
-        assert 'md' in call_args['file_extensions']
-        assert 'json' not in call_args['file_extensions']
+    main.main()
+    
+    # Check that process_directory was called with correct extensions
+    call_args = mock_process.call_args[1]
+    assert 'txt' in call_args['file_extensions']
+    assert 'md' in call_args['file_extensions']
+    assert 'json' not in call_args['file_extensions']
 
 @patch('sys.argv')
-def test_main_dry_run(mock_argv, temp_dirs):
+def test_main_dry_run(mock_argv, temp_dirs, monkeypatch):
     """Test using the dry run option."""
     input_dir, output_dir = temp_dirs
     
@@ -135,16 +155,21 @@ def test_main_dry_run(mock_argv, temp_dirs):
         "--dry-run"
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with dry_run=True
-        call_args = mock_process.call_args[1]
-        assert call_args['dry_run'] is True
+    main.main()
+    
+    # Check that process_directory was called with dry_run=True
+    call_args = mock_process.call_args[1]
+    assert call_args['dry_run'] is True
 
 @patch('sys.argv')
-def test_main_json_path(mock_argv, temp_dirs):
+def test_main_json_path(mock_argv, temp_dirs, monkeypatch):
     """Test using a JSON path."""
     input_dir, output_dir = temp_dirs
     
@@ -156,16 +181,21 @@ def test_main_json_path(mock_argv, temp_dirs):
         "--json-path", "content.text"
     ][idx]
     
+    # Create a mock for process_directory
+    mock_process = MagicMock()
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process)
+    
     # Run the main function
-    with patch('src.notebook_cat.core.process_directory') as mock_process:
-        main.main()
-        
-        # Check that process_directory was called with the correct JSON path
-        call_args = mock_process.call_args[1]
-        assert call_args['json_path'] == "content.text"
+    main.main()
+    
+    # Check that process_directory was called with the correct JSON path
+    call_args = mock_process.call_args[1]
+    assert call_args['json_path'] == "content.text"
 
 @patch('sys.argv')
-def test_main_file_not_found_error(mock_argv, temp_dirs, capsys):
+def test_main_file_not_found_error(mock_argv, temp_dirs, capsys, monkeypatch):
     """Test handling of FileNotFoundError."""
     input_dir, output_dir = temp_dirs
     non_existent_dir = str(Path(input_dir) / "non_existent")
@@ -177,22 +207,26 @@ def test_main_file_not_found_error(mock_argv, temp_dirs, capsys):
         str(output_dir)
     ][idx]
     
-    # Mock process_directory to raise FileNotFoundError
-    with patch('src.notebook_cat.core.process_directory', 
-               side_effect=FileNotFoundError(f"No such file or directory: '{non_existent_dir}'")):
-        # Run the main function and expect a sys.exit
-        with pytest.raises(SystemExit) as e:
-            main.main()
-        
-        # Check the exit code
-        assert e.value.code == 1
-        
-        # Check that the appropriate error message was printed
-        captured = capsys.readouterr()
-        assert "Error: File or directory not found" in captured.out
+    # Create a mock that raises FileNotFoundError
+    def mock_process_directory(*args, **kwargs):
+        raise FileNotFoundError(f"No such file or directory: '{non_existent_dir}'")
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process_directory)
+    
+    # Run the main function and expect a sys.exit
+    with pytest.raises(SystemExit) as e:
+        main.main()
+    
+    # Check the exit code
+    assert e.value.code == 1
+    
+    # Check that the appropriate error message was printed
+    captured = capsys.readouterr()
+    assert "Error: File or directory not found" in captured.out
 
 @patch('sys.argv')
-def test_main_permission_error(mock_argv, temp_dirs, capsys):
+def test_main_permission_error(mock_argv, temp_dirs, capsys, monkeypatch):
     """Test handling of PermissionError."""
     input_dir, output_dir = temp_dirs
     
@@ -203,22 +237,26 @@ def test_main_permission_error(mock_argv, temp_dirs, capsys):
         str(output_dir)
     ][idx]
     
-    # Mock process_directory to raise PermissionError
-    with patch('src.notebook_cat.core.process_directory', 
-               side_effect=PermissionError("Permission denied")):
-        # Run the main function and expect a sys.exit
-        with pytest.raises(SystemExit) as e:
-            main.main()
-        
-        # Check the exit code
-        assert e.value.code == 1
-        
-        # Check that the appropriate error message was printed
-        captured = capsys.readouterr()
-        assert "Error: Permission denied" in captured.out
+    # Create a mock that raises PermissionError
+    def mock_process_directory(*args, **kwargs):
+        raise PermissionError("Permission denied")
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process_directory)
+    
+    # Run the main function and expect a sys.exit
+    with pytest.raises(SystemExit) as e:
+        main.main()
+    
+    # Check the exit code
+    assert e.value.code == 1
+    
+    # Check that the appropriate error message was printed
+    captured = capsys.readouterr()
+    assert "Error: Permission denied" in captured.out
 
 @patch('sys.argv')
-def test_main_generic_error(mock_argv, temp_dirs, capsys):
+def test_main_generic_error(mock_argv, temp_dirs, capsys, monkeypatch):
     """Test handling of generic exceptions."""
     input_dir, output_dir = temp_dirs
     
@@ -229,16 +267,20 @@ def test_main_generic_error(mock_argv, temp_dirs, capsys):
         str(output_dir)
     ][idx]
     
-    # Mock process_directory to raise a generic exception
-    with patch('src.notebook_cat.core.process_directory', 
-               side_effect=ValueError("Some error")):
-        # Run the main function and expect a sys.exit
-        with pytest.raises(SystemExit) as e:
-            main.main()
-        
-        # Check the exit code
-        assert e.value.code == 1
-        
-        # Check that the appropriate error message was printed
-        captured = capsys.readouterr()
-        assert "An error occurred during processing: ValueError" in captured.out
+    # Create a mock that raises a generic exception
+    def mock_process_directory(*args, **kwargs):
+        raise ValueError("Some error")
+    
+    # Apply the mock to the main module
+    monkeypatch.setattr("src.notebook_cat.main.core.process_directory", mock_process_directory)
+    
+    # Run the main function and expect a sys.exit
+    with pytest.raises(SystemExit) as e:
+        main.main()
+    
+    # Check the exit code
+    assert e.value.code == 1
+    
+    # Check that the appropriate error message was printed
+    captured = capsys.readouterr()
+    assert "An error occurred during processing: ValueError" in captured.out

@@ -79,29 +79,34 @@ def process_files(
     temp_input_dir = temp_base + "-input"
     temp_output_dir = temp_base + "-output"
     
-    # Create the directories with proper permissions
+    # Create the directories with secure permissions
     try:
         os.makedirs(temp_input_dir, exist_ok=True)
         os.makedirs(temp_output_dir, exist_ok=True)
-        # Ensure directories have full permissions
-        os.chmod(temp_input_dir, 0o777)
-        os.chmod(temp_output_dir, 0o777)
+        # Set more secure permissions (user read/write/execute only)
+        os.chmod(temp_input_dir, 0o700)
+        os.chmod(temp_output_dir, 0o700)
         print(f"Created temp directories: {temp_input_dir}, {temp_output_dir}")
     except Exception as e:
         print(f"Error creating temp directories: {e}")
         return [], f"Error creating temporary directories: {str(e)}", ""
     
     try:
-        # Copy uploaded files to the temporary input directory
+        # Copy uploaded files to the temporary input directory with validation
         progress(0.1, desc=f"Copying {file_count} files...")
         for i, file in enumerate(files):
             file_path = Path(file)
             # Only copy files with supported extensions
-            if file_path.suffix.lower()[1:] in SUPPORTED_EXTENSIONS:
-                dest_path = os.path.join(temp_input_dir, file_path.name)
+            extension = file_path.suffix.lower()[1:]
+            if extension in SUPPORTED_EXTENSIONS:
+                # Sanitize filename to prevent path traversal
+                safe_filename = os.path.basename(file_path.name)
+                dest_path = os.path.join(temp_input_dir, safe_filename)
                 shutil.copy2(file, dest_path)
                 progress(0.1 + 0.1 * (i + 1) / file_count)
                 print(f"Copied file {i+1}/{file_count}: {file} -> {dest_path}")
+            else:
+                print(f"Skipped unsupported file: {file}")
         
         # Check if files were copied
         copied_files = os.listdir(temp_input_dir)
@@ -351,28 +356,45 @@ def create_ui():
 def launch_ui():
     """Launch the Gradio interface."""
     import socket
+    import argparse
     
-    # Get the hostname
-    hostname = socket.gethostname()
-    # Get the IP address
-    try:
-        ip_address = socket.gethostbyname(hostname)
-    except:
-        ip_address = "your-ip-address"
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Launch the Notebook Cat web interface")
+    parser.add_argument("--network", action="store_true", help="Allow network access (bind to all interfaces)")
+    args = parser.parse_args()
+    
+    # Determine server name based on network flag
+    server_name = "0.0.0.0" if args.network else "127.0.0.1"
+    
+    # Get hostname information only if needed
+    hostname = ""
+    ip_address = ""
+    if args.network:
+        hostname = socket.gethostname()
+        try:
+            ip_address = socket.gethostbyname(hostname)
+        except:
+            ip_address = "your-ip-address"
     
     app = create_ui()
     print("\n🔥 Starting Notebook Cat Web UI...")
-    print(f"📝 Web interface will be accessible at: http://{ip_address}:7860")
     print("📝 Local access: http://localhost:7860")
-    print("📝 Network access: http://0.0.0.0:7860 (from any device on your network)")
+    
+    if args.network:
+        print(f"📝 Network access: http://{ip_address}:7860 (from any device on your network)")
+        print("\nWARNING: Network access is enabled. The web interface is accessible from other devices.")
+    else:
+        print("\nNote: By default, the web interface is only accessible on localhost for security.")
+        print("To enable network access, use the --network flag when starting the application.")
+    
     print("\nPress Ctrl+C to stop the server\n")
     
     # Launch the app with verbose output
     app.launch(
-        server_name="0.0.0.0",  # Bind to all interfaces
-        show_error=True,        # Show detailed error messages
-        share=False,            # No Gradio public share
-        quiet=False             # Show server logs
+        server_name=server_name,  # Bind to localhost by default or all interfaces if --network
+        show_error=True,          # Show detailed error messages
+        share=False,              # No Gradio public share
+        quiet=False               # Show server logs
     )
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='notebook-cat',
-    version='1.0.0',
+    version='1.5.0',
     description='Concatenate text, markdown, and JSON files for Google NotebookLM',
     long_description=open('README.md', 'r').read(),
     long_description_content_type='text/markdown',
@@ -28,6 +28,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: Utilities',
     ],
     python_requires='>=3.8',

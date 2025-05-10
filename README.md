@@ -42,12 +42,13 @@ For example, if a user is on the free plan with a 50 source limit but has 200 sm
 
 - **NotebookLM Upload Inconsistency**: When uploading multiple large files to NotebookLM at once, some files may fail to process. This appears to be a limitation on Google's side (possibly related to timeouts or resource constraints). If this happens, you can successfully upload the problematic files individually. Reducing the word limit per file (e.g., from 380K to 350K words) may change which files fail, but doesn't necessarily fix the issue.
 
-## Requirements
-- Python 3.10 or 3.11 works best. It's recommended to create a Python or conda virtual environment, but not necessary
-- Dependencies:
-  - Pytest for testing
-  - Gradio for the web interface (only needed if using the web UI)
-- Should work on just about any system
+## Security Features
+
+- The web interface binds to localhost (127.0.0.1) by default for security
+- Secure file handling with input validation and path sanitization
+- Temporary directories use secure permissions (0o700)
+- Optional network access with explicit flag (--network) for multi-device usage
+- Protection against common web vulnerabilities
 
 ## Installation
 
@@ -57,6 +58,19 @@ git clone https://github.com/Nazuna-io/notebook-cat.git
 cd notebook-cat
 pip install -e .
 ```
+
+From PyPI:
+```bash
+pip install notebook-cat
+```
+
+## Requirements
+- Python 3.8 or higher (Python 3.10 or 3.11 recommended)
+- Dependencies:
+  - pytest >= 7.0.0 (for testing)
+  - pytest-cov >= 4.0.0 (for test coverage)
+  - gradio >= 4.0.0 (for the web interface)
+- Works on Linux, macOS, and Windows
 
 ## Basic Usage
 
@@ -89,9 +103,12 @@ cd notebook-cat
 python3 -m notebook_cat.webui
 ```
 
-The web interface will be accessible from:
-- Local access: http://localhost:7860
-- Network access: http://[YOUR-IP-ADDRESS]:7860 (accessible from any device on your network)
+The web interface will be accessible at http://localhost:7860 by default.
+
+To enable network access (so other devices on your network can access the UI):
+```bash
+notebook-cat-web --network
+```
 
 The web interface allows you to:
 1. Upload files via drag-and-drop or file selection
