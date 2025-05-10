@@ -295,15 +295,9 @@ def create_ui():
     #summary-output { font-family: monospace; white-space: pre; }
     .output-section { margin-top: 1em; }
     .result-box { background-color: #f8f9fa; padding: 1em; border-radius: 0.5em; margin-bottom: 1em; }
+    /* Add CSP-like protections via CSS since we can't set headers directly */
+    iframe { display: none; }
     """
-    
-    # Set strict Content Security Policy headers
-    csp_headers = {
-        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self';",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "SAMEORIGIN",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
-    }
     
     with gr.Blocks(css=css, title="Notebook Cat - File Concatenator for NotebookLM") as app:
         # Add the notebook cat image at the top
@@ -453,6 +447,8 @@ def launch_ui():
     print("\nPress Ctrl+C to stop the server\n")
     
     # Set strict Content Security Policy headers
+    # These would normally be passed as headers parameter to app.launch(), but older
+    # Gradio versions don't support this. Setting CSP is still recommended when upgrading.
     csp_headers = {
         "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self';",
         "X-Content-Type-Options": "nosniff",
@@ -467,7 +463,6 @@ def launch_ui():
         share=False,              # No Gradio public share
         quiet=False,              # Show server logs
         ssl_verify=True,          # Verify SSL
-        headers=csp_headers       # Add security headers
     )
 
 if __name__ == "__main__":

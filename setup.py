@@ -18,7 +18,7 @@ setup(
         ],
     },
     install_requires=[
-        'gradio>=4.0.0',
+        'gradio>=3.36.1',  # Compatible with current installed version
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
