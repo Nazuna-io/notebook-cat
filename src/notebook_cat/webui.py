@@ -13,6 +13,7 @@ import gradio as gr
 from pathlib import Path
 import zipfile
 import sys
+import re
 
 # Import from the project
 try:
@@ -23,6 +24,11 @@ try:
         PLUS_SOURCE_LIMIT,
         SUPPORTED_EXTENSIONS
     )
+    from notebook_cat.validation import (
+        validate_inputs, 
+        sanitize_filename,
+        validate_json_path
+    )
 except ImportError:
     # Fall back to relative import for development
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -32,6 +38,11 @@ except ImportError:
         DEFAULT_SOURCE_LIMIT,
         PLUS_SOURCE_LIMIT,
         SUPPORTED_EXTENSIONS
+    )
+    from src.notebook_cat.validation import (
+        validate_inputs, 
+        sanitize_filename,
+        validate_json_path
     )
 
 def process_files(
@@ -54,8 +65,24 @@ def process_files(
     Returns:
         tuple: (list of output files, status message, summary)
     """
-    if not files:
-        return [], "No files were uploaded. Please upload files to concatenate.", ""
+    # Validate all inputs
+    is_valid, sanitized, errors = validate_inputs(files, plan_type, word_limit, json_path)
+    
+    if not is_valid and not sanitized.get("files"):
+        error_message = "Validation errors: " + ", ".join(errors)
+        return [], error_message, ""
+    
+    # Use sanitized inputs
+    files = sanitized.get("files", files)
+    plan_type = sanitized.get("plan_type", plan_type)
+    word_limit = sanitized.get("word_limit", word_limit)
+    json_path = sanitized.get("json_path", json_path)
+    
+    # Show validation warnings if any
+    validation_warnings = []
+    if errors:
+        validation_warnings.append("Some inputs were sanitized:")
+        validation_warnings.extend(errors)
     
     # Track start time for performance reporting
     import time
@@ -94,15 +121,20 @@ def process_files(
     try:
         # Copy uploaded files to the temporary input directory with validation
         progress(0.1, desc=f"Copying {file_count} files...")
+        copied_count = 0
         for i, file in enumerate(files):
             file_path = Path(file)
             # Only copy files with supported extensions
             extension = file_path.suffix.lower()[1:]
             if extension in SUPPORTED_EXTENSIONS:
                 # Sanitize filename to prevent path traversal
-                safe_filename = os.path.basename(file_path.name)
+                safe_filename = sanitize_filename(file_path.name)
+                if safe_filename != file_path.name:
+                    print(f"Sanitized filename: {file_path.name} -> {safe_filename}")
+                
                 dest_path = os.path.join(temp_input_dir, safe_filename)
                 shutil.copy2(file, dest_path)
+                copied_count += 1
                 progress(0.1 + 0.1 * (i + 1) / file_count)
                 print(f"Copied file {i+1}/{file_count}: {file} -> {dest_path}")
             else:
@@ -111,6 +143,18 @@ def process_files(
         # Check if files were copied
         copied_files = os.listdir(temp_input_dir)
         print(f"Files copied to temp dir: {len(copied_files)} - {copied_files}")
+        
+        if copied_count == 0:
+            return [], "No valid files were found. Please upload files with supported extensions (.txt, .md, .json).", ""
+        
+        # Validate JSON path one more time before processing
+        if json_path:
+            is_valid_json_path, sanitized_json_path = validate_json_path(json_path)
+            if not is_valid_json_path:
+                json_path = sanitized_json_path
+                print(f"Sanitized JSON path: {json_path}")
+                # Add a warning but continue processing
+                validation_warnings.append(f"Invalid JSON path format was sanitized to: {sanitized_json_path}")
         
         # Process the files
         progress(0.2, desc="Processing files...")
@@ -216,7 +260,12 @@ def process_files(
         # Calculate elapsed time
         elapsed_time = time.time() - start_time
         
-        return [zip_path], f"Processing complete! {len(output_files_list)} files created in {elapsed_time:.2f} seconds.", summary
+        # Add validation warnings if any
+        status_message = f"Processing complete! {len(output_files_list)} files created in {elapsed_time:.2f} seconds."
+        if validation_warnings:
+            status_message += "\n\nWarnings: " + "; ".join(validation_warnings)
+        
+        return [zip_path], status_message, summary
         
     except Exception as e:
         import traceback
@@ -247,6 +296,14 @@ def create_ui():
     .output-section { margin-top: 1em; }
     .result-box { background-color: #f8f9fa; padding: 1em; border-radius: 0.5em; margin-bottom: 1em; }
     """
+    
+    # Set strict Content Security Policy headers
+    csp_headers = {
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self';",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+    }
     
     with gr.Blocks(css=css, title="Notebook Cat - File Concatenator for NotebookLM") as app:
         gr.Markdown("# 📓 Notebook Cat")
@@ -389,12 +446,22 @@ def launch_ui():
     
     print("\nPress Ctrl+C to stop the server\n")
     
+    # Set strict Content Security Policy headers
+    csp_headers = {
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self';",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+    }
+    
     # Launch the app with verbose output
     app.launch(
         server_name=server_name,  # Bind to localhost by default or all interfaces if --network
         show_error=True,          # Show detailed error messages
         share=False,              # No Gradio public share
-        quiet=False               # Show server logs
+        quiet=False,              # Show server logs
+        ssl_verify=True,          # Verify SSL
+        headers=csp_headers       # Add security headers
     )
 
 if __name__ == "__main__":

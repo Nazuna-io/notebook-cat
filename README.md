@@ -2,7 +2,7 @@
 
 # Notebook Cat
 
-A command-line tool to optimally concatenate text, markdown, and JSON files into larger source files ("sources") for Google NotebookLM, maximizing source count and word limits.
+A tool to optimally concatenate text, markdown, and JSON files into larger source files ("sources") for Google NotebookLM, maximizing source count and word limits. Features both a command-line interface and a web-based graphical UI.
 
 ## Problem
 
