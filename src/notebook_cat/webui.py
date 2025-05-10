@@ -306,11 +306,17 @@ def create_ui():
     }
     
     with gr.Blocks(css=css, title="Notebook Cat - File Concatenator for NotebookLM") as app:
-        gr.Markdown("# 📓 Notebook Cat")
-        gr.Markdown("""
-        A tool to optimally concatenate text, markdown, and JSON files into larger source files for Google NotebookLM.
-        This helps maximize your content while respecting NotebookLM's source count limits.
-        """)
+        # Add the notebook cat image at the top
+        with gr.Row(variant="panel"):
+            with gr.Column(scale=1):
+                gr.Image(value=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "notebook-cat-small.jpg"), 
+                          show_label=False, height=100, width=100)
+            with gr.Column(scale=5):
+                gr.Markdown("# Notebook Cat")
+                gr.Markdown("""
+                A tool to optimally concatenate text, markdown, and JSON files into larger source files for Google NotebookLM.
+                This helps maximize your content while respecting NotebookLM's source count limits.
+                """)
         
         with gr.Row():
             with gr.Column(scale=2):
